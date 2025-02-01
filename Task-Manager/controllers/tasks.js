@@ -1,35 +1,68 @@
-const express = require('express')
-const router = express.Router()
-const Task = require('../models/task.js')
-const getAllTasks = (req, res) => {
-    res.send('All items from the file')
-}
+const express = require('express');
+const router = express.Router();
+const Task = require('../models/task.js');
 
+// Get all tasks
+const getAllTasks = async (req, res) => {
+    try {
+        const tasks = await Task.find({});
+        res.status(200).json({ tasks});
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+// Create a new task
 const createTask = async (req, res) => {
     try {
-        const task = await Task.create(req.body)
-    // const task = await Task.create({name: req.body.name, completed: req.body.completed})
-    res.status(201).json({task})
+        const task = await Task.create(req.body);
+        res.status(201).json({ task });
     } catch (error) {
-        res.status(500).json({msg: error})
-        // res.status(error.status).json({msg: error.message})
+        res.status(500).json({ msg: error.message });
     }
-    
-}
+};
 
-const getTask = (req, res) => {
-    res.send({id: req.params.id})
-}
+// Get a single task by ID
+const getTask = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+        if (!task) {
+            return res.status(404).json({ msg: `No task with id: ${req.params.id}` });
+        }
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
 
-const updateTask = (req, res) => {
-    res.send('create tassk')
-}
+// Update a task by ID
+const updateTask = async (req, res) => {
+    try {
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        if (!task) {
+            return res.status(404).json({ msg: `No task with id: ${req.params.id}` });
+        }
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
 
-const deleteTask = (req, res) => {
-    res.send('create tassk')
-}
-
-
+// Delete a task by ID
+const deleteTask = async (req, res) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id);
+        if (!task) {
+            return res.status(404).json({ msg: `No task with id: ${req.params.id}` });
+        }
+        res.status(200).json({ msg: 'Task deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
 
 module.exports = {
     getAllTasks,
@@ -37,4 +70,4 @@ module.exports = {
     getTask,
     updateTask,
     deleteTask,
- };
+};
