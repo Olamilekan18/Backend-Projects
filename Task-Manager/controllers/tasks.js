@@ -31,9 +31,13 @@ const getTask = async (req, res) => {
         }
         res.status(200).json({ task });
     } catch (error) {
+        if (error.name === 'CastError') {
+            return res.status(400).json({ msg: `Invalid task ID: ${req.params.id}` });
+        }
         res.status(500).json({ msg: error.message });
     }
 };
+
 
 // Update a task by ID
 const updateTask = async (req, res) => {
