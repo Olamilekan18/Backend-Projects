@@ -1,18 +1,19 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = 3000
 require('./db/connect.js')
 const tasks = require('./routes/tasks')
 const connectDB = require('./db/connect.js')
-require('dotenv').config()
 
 app.get('/', (req, res) => res.send('Home Page'));
 app.get('/hello', (req, res) => res.send('Hello World!'))
 
 //middleware
 app.use(express.json())
+app.use(express.static('./public'))
 
-const start = async () => {
+const start = async () => { 
     try {
         await connectDB(process.env.MONGO_URI)
         app.listen(port, () => {

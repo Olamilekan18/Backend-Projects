@@ -1,12 +1,19 @@
+def compute_series(x, n):
+    if n < 1:
+        return 0  # Handle invalid cases
 
-# Step 1: Initialize epsilon
-epsilon = 1.0
-r = 1.0 + epsilon
+    sum_result = x
+    term1 = x
+    term2 = x**2
 
-# Step 2: Loop until r is no longer greater than 1.0
-while r > 1.0:
-    epsilon = epsilon / 2.0
-    r = 1.0 + epsilon
+    for i in range(3, n + 1):
+        new_term = term1 + term2
+        sum_result += new_term
+        term1, term2 = term2, new_term  # Shift Fibonacci sequence
 
-# Step 3: Display the machine epsilon (previous epsilon before condition failed)
-print("Machine epsilon:", epsilon * 2)
+    return sum_result
+
+# Example usage
+x = 0.5  # Input value
+n = 10  # Number of terms
+print("Approximation:", compute_series(x, n))
